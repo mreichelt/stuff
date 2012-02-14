@@ -1,0 +1,88 @@
+#!/bin/sh
+
+# Copyright 2012 Marc Reichelt,
+# derived from adb bash completion script by Roman Nurik
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Bash completion for fastboot
+function _fastboot() {
+  local result_names
+  local result_xpat
+  local cmd=${COMP_WORDS[0]}
+  local word=${COMP_WORDS[COMP_CWORD]}
+  local eat_trailing_space=''
+  local line=${COMP_LINE}
+  local next
+
+  local ind=1
+
+  # Look for fastboot options
+  if [[ ${COMP_WORDS[$ind]} == "-s" ]]; then
+    if [[ ${COMP_CWORD} == 2 ]]; then
+      # We're completing for a device serial number
+      local devices=$(${cmd} devices | tr -s '\t ' ' ' | cut -f 1 -d ' ')
+      COMPREPLY=($(compgen -W "${devices}" -- "${word}"))
+      if [[ ${COMPREPLY} == '' ]]; then
+        COMPREPLY=""
+        echo 
+        echo 'No devices found. Run "fastboot devices" for a sanity check.'
+      fi
+      return
+    else
+      # We've already completed a device serial number.
+      let 'ind += 2'
+    fi
+  fi
+
+  # fastboot ___
+  function _root() {
+    # Primary command flow
+    if [[ ${COMP_CWORD} -le $ind ]]; then
+      # TODO: handle "flash:raw boot"
+      read -r -d '' result_names <<EOF
+flashall flash erase getvar boot devices continue reboot reboot-bootloader help
+update
+EOF
+    else
+      next=${COMP_WORDS[$ind]}
+      let 'ind += 1'
+
+      case "${next}" in
+      update)
+        result_xpat='!*.zip'
+        ;;
+
+      *)
+        result_names=''
+        ;;
+      esac
+    fi
+  }
+
+  # Kick off command flow matching
+  _root
+
+  if [[ -n "${result_xpat}" ]]; then
+    COMPREPLY=($(compgen -f -X "${result_xpat}" -- "${word}"))
+  else
+    COMPREPLY=($(compgen -S ' ' -W "${result_names}" -- "${word}"))
+  fi
+
+  if [[ -z ${eat_trailing_space} ]]; then
+    COMPREPLY=("${COMPREPLY[@]/%/ }")
+  fi
+}
+
+complete -o nospace -o default -F _fastboot fastboot
+
