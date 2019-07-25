@@ -23,6 +23,7 @@ For the rest of this document, I'll only mention the Mac shortcuts for brevity.
 ### Editing
 
 - Fix problems and get suggestions with `Alt + Enter`
+- Reformat code with `Cmd + Alt + L` (add `Shift` to show options and select *Optimize imports*)
 - Insert new things with `Cmd + N`
 - Extend / Shrink selection with `Alt + Up` or `Alt + Down`
 - Cut lines with `Cmd + X`
@@ -41,7 +42,21 @@ For the rest of this document, I'll only mention the Mac shortcuts for brevity.
 
 ### Scratch files
 
-TODO
+A scratch file allows you to create a new file without the need to specify a file name or location. They are ideal for lots of things:
+
+- write something down fast
+- get instant syntax highlighting for something
+- instant way to format something
+
+For example, I get some minified JSON from somewhere. Now I just want to show it nicely to be able to read it.
+
+Let's pull some JSON, minify it (GitHub already pretty-printed the JSON for us, but we revert that for this sample) and copy it to the clipboard:
+
+```bash
+curl https://api.github.com/users/mreichelt | jq -Mc | pbcopy
+```
+
+Now we create a new scratch file with `Cmd + Shift + N` and select *JSON* in the dropdown, paste the JSON. Now we can reformat the JSON and profit! 🎉
 
 ### Error / warning driven development (this is fun!)
 
