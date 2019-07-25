@@ -68,7 +68,12 @@ Now we create a new scratch file with `Cmd + Shift + N` and select *JSON* in the
 
 ### Version Control (Git)
 
-TODO
+- Update / pull with `Cmd + T`
+- Commit with `Cmd + K`
+- Push with `Cmd + Shift + K`
+- Show diff of file with `Cmd + D`
+- Step to next change with `F7`
+- Press main button in dialog with `Ctrl + Enter`
 
 ### Let IntelliJ fix your code for you with `F2` and `Alt + Enter` (this is fun!)
 
